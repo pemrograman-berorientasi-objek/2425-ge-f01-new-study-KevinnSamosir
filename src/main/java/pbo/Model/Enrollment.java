@@ -9,6 +9,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * @author 
+ *     12S23003 Chrismansyah Tolhas Siahaan
+ *     12S23015 Kevin Kristoforus Samosir
+ */
+
 @Entity
 @Table(name = "enrollments")
 public class Enrollment implements Serializable {
