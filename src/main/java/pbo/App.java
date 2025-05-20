@@ -1,5 +1,4 @@
 package pbo;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -102,7 +101,6 @@ public class App {
                     }
 
                     default:
-                        // Ignore unrecognized command
                         break;
                 }
             }
