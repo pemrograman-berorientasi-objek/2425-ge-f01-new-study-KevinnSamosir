@@ -71,6 +71,25 @@ public class App {
                         }
                     }
                     break;
+
+                case "student-show-all":
+                    for (String nimKey : students.keySet()) {
+                        Student s = students.get(nimKey);
+                        System.out.println(s.getNim() + "|" + s.getName() + "|" + s.getProgramStudi());
+                        List<Course> courseList = new ArrayList<>();
+                        for (Enrollment e : enrollments) {
+                            if (e.getStudentNim().equals(nimKey)) {
+                                Course c = courses.get(e.getCourseCode());
+                                if (c != null) courseList.add(c);
+                            }
+                        }
+                        courseList.sort(Comparator.comparing(Course::getCourseCode));
+                        for (Course c : courseList) {
+                            System.out.println(c.getCourseCode() + "|" + c.getCourseName() + "|" + c.getSemester() + "|" + c.getCredits());
+                        }
+                    }
+                    break;
+
                 default:
                     break;
             }
