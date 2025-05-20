@@ -32,32 +32,33 @@ public class App {
             String command = parts[0];
 
             switch (command) {
-                case "student-add":
+                case "student-add": {
                     String nim = parts[1];
                     String name = parts[2];
                     String programStudi = parts[3];
                     students.put(nim, new Student(nim, name, programStudi));
                     break;
-
-                case "course-add":
+                }
+                case "course-add": {
                     String code = parts[1];
                     String courseName = parts[2];
                     int semester = Integer.parseInt(parts[3]);
                     int credits = Integer.parseInt(parts[4]);
                     courses.put(code, new Course(code, courseName, semester, credits));
                     break;
-
-                case "enroll":
+                }
+                case "enroll": {
                     String studentNim = parts[1];
                     String courseCode = parts[2];
                     enrollments.add(new Enrollment(studentNim, courseCode));
                     break;
-
-                case "student-show":
+                }
+                case "student-show": {
                     String targetNim = parts[1];
                     Student student = students.get(targetNim);
                     if (student != null) {
                         System.out.println(student.getNim() + "|" + student.getName() + "|" + student.getProgramStudi());
+
                         List<Course> studentCourses = new ArrayList<>();
                         for (Enrollment e : enrollments) {
                             if (e.getStudentNim().equals(targetNim)) {
@@ -65,35 +66,20 @@ public class App {
                                 if (c != null) studentCourses.add(c);
                             }
                         }
+
                         studentCourses.sort(Comparator.comparing(Course::getCourseCode));
+
                         for (Course c : studentCourses) {
                             System.out.println(c.getCourseCode() + "|" + c.getCourseName() + "|" + c.getSemester() + "|" + c.getCredits());
                         }
                     }
                     break;
-
-                case "student-show-all":
-                    for (String nimKey : students.keySet()) {
-                        Student s = students.get(nimKey);
-                        System.out.println(s.getNim() + "|" + s.getName() + "|" + s.getProgramStudi());
-                        List<Course> courseList = new ArrayList<>();
-                        for (Enrollment e : enrollments) {
-                            if (e.getStudentNim().equals(nimKey)) {
-                                Course c = courses.get(e.getCourseCode());
-                                if (c != null) courseList.add(c);
-                            }
-                        }
-                        courseList.sort(Comparator.comparing(Course::getCourseCode));
-                        for (Course c : courseList) {
-                            System.out.println(c.getCourseCode() + "|" + c.getCourseName() + "|" + c.getSemester() + "|" + c.getCredits());
-                        }
-                    }
-                    break;
-
+                }
                 default:
                     break;
             }
         }
+
         scanner.close();
     }
 }
