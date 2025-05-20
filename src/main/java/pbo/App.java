@@ -18,68 +18,87 @@ import pbo.Model.Student;
 
 public class App {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        try (Scanner scanner = new Scanner(System.in)) {
 
-        Map<String, Student> students = new TreeMap<>();
-        Map<String, Course> courses = new TreeMap<>();
-        List<Enrollment> enrollments = new ArrayList<>();
+            Map<String, Student> students = new TreeMap<>();
+            Map<String, Course> courses = new TreeMap<>();
+            List<Enrollment> enrollments = new ArrayList<>();
 
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine().trim();
-            if (line.equals("---")) break;
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine().trim();
+                if (line.equals("---")) break;
 
-            String[] parts = line.split("#");
-            String command = parts[0];
+                String[] parts = line.split("#");
+                String command = parts[0];
 
-            switch (command) {
-                case "student-add": {
-                    String nim = parts[1];
-                    String name = parts[2];
-                    String programStudi = parts[3];
-                    students.put(nim, new Student(nim, name, programStudi));
-                    break;
-                }
-                case "course-add": {
-                    String code = parts[1];
-                    String courseName = parts[2];
-                    int semester = Integer.parseInt(parts[3]);
-                    int credits = Integer.parseInt(parts[4]);
-                    courses.put(code, new Course(code, courseName, semester, credits));
-                    break;
-                }
-                case "enroll": {
-                    String studentNim = parts[1];
-                    String courseCode = parts[2];
-                    enrollments.add(new Enrollment(studentNim, courseCode));
-                    break;
-                }
-                case "student-show": {
-                    String targetNim = parts[1];
-                    Student student = students.get(targetNim);
-                    if (student != null) {
-                        System.out.println(student.getNim() + "|" + student.getName() + "|" + student.getProgramStudi());
+                switch (command) {
+                    case "student-add":
+                        String nim = parts[1];
+                        String name = parts[2];
+                        String programStudi = parts[3];
+                        students.put(nim, new Student(nim, name, programStudi));
+                        break;
 
-                        List<Course> studentCourses = new ArrayList<>();
-                        for (Enrollment e : enrollments) {
-                            if (e.getStudentNim().equals(targetNim)) {
-                                Course c = courses.get(e.getCourseCode());
-                                if (c != null) studentCourses.add(c);
+                    case "course-add":
+                        String code = parts[1];
+                        String courseName = parts[2];
+                        int semester = Integer.parseInt(parts[3]);
+                        int credits = Integer.parseInt(parts[4]);
+                        courses.put(code, new Course(code, courseName, semester, credits));
+                        break;
+
+                    case "enroll":
+                        String studentNim = parts[1];
+                        String courseCode = parts[2];
+                        Student enrolledStudent = students.get(studentNim);
+                        Course enrolledCourse = courses.get(courseCode);
+                        if (enrolledStudent != null && enrolledCourse != null) {
+                            enrollments.add(new Enrollment(enrolledStudent, enrolledCourse));
+                        }
+                        break;
+
+                    case "student-show":
+                        String targetNim = parts[1];
+                        Student student = students.get(targetNim);
+                        if (student != null) {
+                            System.out.println(student.getNim() + "|" + student.getName() + "|" + student.getProgramStudi());
+                            List<Course> studentCourses = new ArrayList<>();
+                            for (Enrollment e : enrollments) {
+                                if (e.getStudent().getNim().equals(targetNim)) {
+                                    Course c = e.getCourse();
+                                    if (c != null) studentCourses.add(c);
+                                }
+                            }
+                            studentCourses.sort(Comparator.comparing(Course::getCode));
+                            for (Course c : studentCourses) {
+                                System.out.println(c.getCode() + "|" + c.getName() + "|" + c.getSemester() + "|" + c.getCredits());
                             }
                         }
+                        break;
 
-                        studentCourses.sort(Comparator.comparing(Course::getCourseCode));
-
-                        for (Course c : studentCourses) {
-                            System.out.println(c.getCourseCode() + "|" + c.getCourseName() + "|" + c.getSemester() + "|" + c.getCredits());
+                    case "student-show-all":
+                        for (String nimKey : students.keySet()) {
+                            Student s = students.get(nimKey);
+                            System.out.println(s.getNim() + "|" + s.getName() + "|" + s.getProgramStudi());
+                            List<Course> courseList = new ArrayList<>();
+                            for (Enrollment e : enrollments) {
+                                if (e.getStudent().getNim().equals(nimKey)) {
+                                    Course c = e.getCourse();
+                                    if (c != null) courseList.add(c);
+                                }
+                            }
+                            courseList.sort(Comparator.comparing(Course::getCode));
+                            for (Course c : courseList) {
+                                System.out.println(c.getCode() + "|" + c.getName() + "|" + c.getSemester() + "|" + c.getCredits());
+                            }
                         }
-                    }
-                    break;
+                        break;
+
+                    default:
+                        break;
                 }
-                default:
-                    break;
             }
         }
-
-        scanner.close();
     }
 }
+
