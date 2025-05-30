@@ -41,7 +41,7 @@ public class Student {
     )
     private List<Course> courses = new ArrayList<>();
 
-    public Student() {
+    public Student() {                      
     }
 
     public Student(String nim, String name, String programStudi) {
